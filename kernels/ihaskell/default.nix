@@ -4,6 +4,12 @@
 , extraIHaskellFlags ? ""
 , name ? "nixpkgs"
 , packages ? (_:[])
+, Rpackages ? (_:[])
+, inline-r ? false
+, pkgs
+, rWrapper
+, runCommand
+, rPackages
 }:
 
 let
@@ -17,10 +23,23 @@ let
     ${ihaskellEnv}/bin/ghc "$@"
   '';
 
+  r-bin-path  = rWrapper.override{ packages = with rPackages; [] ++ (Rpackages rPackages);};
+
+  r-libs-site = runCommand "r-libs-site" (if inline-r then {
+    buildInputs = with pkgs; [  R
+                             ] ++ (Rpackages rPackages);
+  } else {}) ''echo $R_LIBS_SITE > $out'' ;
+
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ])}:$PATH"
+    ${if inline-r then ''
+    export R_LIBS_SITE=${builtins.readFile r-libs-site}
+    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv r-bin-path ] )}:$PATH"
+''
+     else ''
+     export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ] )}:$PATH"
+''}
     ${ihaskellEnv}/bin/ihaskell ${extraIHaskellFlags} -l $(${ihaskellEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
