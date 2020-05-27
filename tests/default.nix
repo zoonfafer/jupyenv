@@ -20,26 +20,31 @@ let
             name = "test";
         })
 
-        ( iJavascript {
-            name = "test";
-        })
+        # Doesn't build without a nmp install due to zeromq. Needs sandbox off.
+        #( iJavascript {
+        #   name = "test";
+        #})
 
         ( iPythonWith {
             name = "test";
         })
 
-        ( iRubyWith {
-            name = "test";
-        })
+        # Fails on MacOS.
+        #( iRubyWith {
+        #    name = "test";
+        #})
 
-        ( juniperWith {
-            name = "test";
-        })
+        # Juniper has been removed from rPackages for some reason.
+        #( juniperWith {
+        #    name = "test";
+        #})
 
-        ( iRWith {
-            name = "test";
-        })
+        # Fails on MacOS.
+        #( iRWith {
+        #    name = "test";
+        #})
 
+        # This is hard to make work. We will work on it later.
         #( xeusCling {
         #    name = "test";
         #})
