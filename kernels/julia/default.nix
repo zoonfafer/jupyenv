@@ -1,5 +1,5 @@
-{ nixpkgs 
-, cudapkgs ? ""
+{
+  nixpkgs ? ""
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
@@ -10,10 +10,10 @@
 , NUM_THREADS ? 1
 , cuda ? false
 , cudaVersion ? ""
+, nvidiaVersion ? ""
 }:
 
 let
-  julia = nixpkgs.julia_13.overrideAttrs(oldAttrs: {checkTarget = "";});
   extraLibs = with nixpkgs;[
     mbedtls
     zeromq3
@@ -24,6 +24,7 @@ let
     zlib
   ] ++ (extraPackages  nixpkgs) ++ nixpkgs.lib.optionals cuda
     [
+      cudaVersion
       # Flux.jl
       libGLU
 		  xorg.libXi xorg.libXmu freeglut
@@ -37,22 +38,22 @@ let
 
  julia_wrapped = nixpkgs.stdenv.mkDerivation rec {
     name = "julia_wrapped";
-    buildInputs = [julia ] ++ extraLibs;
+    buildInputs = [nixpkgs.julia_13 ] ++ extraLibs;
     nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which ];
     phases = [ "installPhase" ];
     installPhase = ''
       export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}
        ${if cuda then ''
-      makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
-      --prefix LD_LIBRARY_PATH ":" "${cudapkgs.linuxPackages.nvidia_x11}/lib" \
+      --prefix LD_LIBRARY_PATH ":" "${nvidiaVersion}/lib" \
       --set JULIA_PKGDIR ${directory} \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
        --set CUDA_PATH "${cudaVersion}"
       ''
          else ''
-      makeWrapper ${julia}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
