@@ -4,6 +4,10 @@
 , extraIHaskellFlags ? ""
 , name ? "nixpkgs"
 , packages ? (_:[])
+, extraRuntimePackages ? (_:[])
+, extraEnvVars ? ""
+, pkgs
+, runCommand
 }:
 
 let
@@ -17,10 +21,19 @@ let
     ${ihaskellEnv}/bin/ghc "$@"
   '';
 
+  extraEnvVars_Command = runCommand "extraEnvVars_PATH" {
+    buildInputs = with pkgs; [
+    ] ++ (extraRuntimePackages pkgs);
+  }''echo $PATH > $out'';
+
+  extraEnvVars_PATH = (builtins.readFile extraEnvVars_Command);
+
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
+    export extraEnvVars_PATH="${extraEnvVars_PATH}"
+    ${extraEnvVars}
     export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ])}:$PATH"
+    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ])}:${extraEnvVars_PATH}/bin:$PATH"
     ${ihaskellEnv}/bin/ihaskell ${extraIHaskellFlags} -l $(${ihaskellEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
