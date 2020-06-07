@@ -1,5 +1,5 @@
-{
-  nixpkgs ? ""
+{ pkgs
+, nixpkgs ? ""
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
@@ -43,7 +43,7 @@ let
     phases = [ "installPhase" ];
     installPhase = ''
       #for R_call.jl
-      export R_HOME=${nixpkgs.R}/lib/R
+      export R_HOME=${pkgs.R}/lib/R
       export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}:
        ${if cuda then ''
       makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
