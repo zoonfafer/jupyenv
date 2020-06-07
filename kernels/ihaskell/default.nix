@@ -24,16 +24,20 @@ let
   extraEnvVars_Command = runCommand "extraEnvVars_PATH" {
     buildInputs = with pkgs; [
     ] ++ (extraRuntimePackages pkgs);
-  }''echo $PATH > $out'';
+  }'' mkdir -p $out
+  echo $R_LIBS_SITE > $out/R-LIB
+  echo $PATH > $out/PATH
+'';
 
-  extraEnvVars_PATH = (builtins.readFile extraEnvVars_Command);
+  extraEnvVars_PATH = "${builtins.readFile "${extraEnvVars_Command}/PATH"}";
 
   ihaskellSh = writeScriptBin "ihaskell" ''
     #! ${stdenv.shell}
     export extraEnvVars_PATH="${extraEnvVars_PATH}"
     ${extraEnvVars}
+    export $R_LIBS_SITE="${builtins.readFile "${extraEnvVars_Command}/R-LIB"}"
     export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
-    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv ])}:${extraEnvVars_PATH}/bin:$PATH"
+    export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv extraEnvVars_PATH ])}:$PATH"
     ${ihaskellEnv}/bin/ihaskell ${extraIHaskellFlags} -l $(${ihaskellEnv}/bin/ghc --print-libdir) "$@"'';
 
   kernelFile = {
