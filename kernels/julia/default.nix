@@ -44,7 +44,7 @@ let
     installPhase = ''
       #for R_call.jl
       export R_HOME=${pkgs.R}/lib/R
-      export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}:
+      export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}:${pkgs.R}/lib/R/lib
        ${if cuda then ''
       makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \

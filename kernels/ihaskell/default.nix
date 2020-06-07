@@ -34,6 +34,7 @@ let
     #! ${stdenv.shell}
     export GHC_PACKAGE_PATH="$(echo ${ihaskellEnv}/lib/*/package.conf.d| tr ' ' ':'):$GHC_PACKAGE_PATH"
     ${if inline-r then ''
+    export LD_LIBRARY_PATH=${pkgs.R}/lib/R/lib
     export R_LIBS_SITE=${builtins.readFile r-libs-site}
     export PATH="${stdenv.lib.makeBinPath ([ ihaskellEnv r-bin-path ] )}:$PATH"
 ''
