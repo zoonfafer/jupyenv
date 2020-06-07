@@ -42,11 +42,13 @@ let
     nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which ];
     phases = [ "installPhase" ];
     installPhase = ''
-      export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}
+      export R_HOME=${nixpkgs.lib.makeLibraryPath extraLibs}:
+      export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}:
        ${if cuda then ''
       makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
+      --prefix R_HOME : "$R_HOME" \
       --prefix LD_LIBRARY_PATH ":" "${nvidiaVersion}/lib" \
       --set JULIA_PKGDIR ${directory} \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
