@@ -42,7 +42,8 @@ let
     nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which ];
     phases = [ "installPhase" ];
     installPhase = ''
-      export R_HOME=${nixpkgs.lib.makeLibraryPath extraLibs}:
+      #for R_call.jl
+      export R_HOME=${nixpkgs.R}/lib/R
       export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}:
        ${if cuda then ''
       makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
