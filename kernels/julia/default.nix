@@ -1,5 +1,4 @@
 { pkgs
-, nixpkgs ? ""
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
@@ -14,7 +13,7 @@
 }:
 
 let
-  extraLibs = with nixpkgs;[
+  extraLibs = with pkgs;[
     mbedtls
     zeromq3
     # ImageMagick.jl
@@ -22,7 +21,7 @@ let
     # GZip.jl # Required by DataFrames.jl
     gzip    
     zlib
-  ] ++ (extraPackages  nixpkgs) ++ nixpkgs.lib.optionals cuda
+  ] ++ (extraPackages  pkgs) ++ pkgs.lib.optionals cuda
     [
       cudaVersion
       # Flux.jl
@@ -36,17 +35,17 @@ let
       procps gnumake utillinux m4 gperf unzip
     ];
 
- julia_wrapped = nixpkgs.stdenv.mkDerivation rec {
+ julia_wrapped = pkgs.stdenv.mkDerivation rec {
     name = "julia_wrapped";
-    buildInputs = [nixpkgs.julia_13 ] ++ extraLibs;
-    nativeBuildInputs = with nixpkgs; [ makeWrapper cacert git pkgconfig which ];
+    buildInputs = [ pkgs.julia_13 ] ++ extraLibs;
+    nativeBuildInputs = with pkgs; [ makeWrapper cacert git pkgconfig which ];
     phases = [ "installPhase" ];
     installPhase = ''
       #for R_call.jl
       export R_HOME=${pkgs.R}/lib/R
-      export LD_LIBRARY_PATH=${nixpkgs.lib.makeLibraryPath extraLibs}:${pkgs.R}/lib/R/lib
+      export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath extraLibs}:${pkgs.R}/lib/R/lib
        ${if cuda then ''
-      makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --prefix R_HOME : "$R_HOME" \
@@ -56,7 +55,7 @@ let
        --set CUDA_PATH "${cudaVersion}"
       ''
          else ''
-      makeWrapper ${nixpkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
@@ -81,13 +80,13 @@ let
 
 
     env =  (if (NUM_THREADS > 1) then {
-      LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
+      LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath extraLibs}";
       JULIA_DEPOT_PATH = "${directory}";
       JULIA_PKGDIR = "${directory}";
       JULIA_NUM_THREADS= "${toString NUM_THREADS}";
     } else
       {
-        LD_LIBRARY_PATH = "${nixpkgs.lib.makeLibraryPath extraLibs}";
+        LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath extraLibs}";
         JULIA_DEPOT_PATH = "${directory}";
         JULIA_PKGDIR = "${directory}";
       });
@@ -122,7 +121,8 @@ in
   {
     spec = JuliaKernel;
      runtimePackages = [
-      julia_wrapped
+       InstalliJulia
+       julia_wrapped
+       Install_JuliaCUDA
     ];
-    inherit InstalliJulia julia_wrapped Install_JuliaCUDA;
   }
