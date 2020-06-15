@@ -13,6 +13,7 @@
 }:
 
 let
+  julia_override = pkgs.julia_13.overrideAttrs(oldAttrs: {checkTarget = "";});
   extraLibs = with pkgs;[
     mbedtls
     zeromq3
@@ -35,9 +36,9 @@ let
       procps gnumake utillinux m4 gperf unzip
     ];
 
- julia_wrapped = pkgs.stdenv.mkDerivation rec {
+  julia_wrapped = pkgs.stdenv.mkDerivation rec {
     name = "julia_wrapped";
-    buildInputs = [ pkgs.julia_13 ] ++ extraLibs;
+    buildInputs = [ julia_override ] ++ extraLibs;
     nativeBuildInputs = with pkgs; [ makeWrapper cacert git pkgconfig which ];
     phases = [ "installPhase" ];
     installPhase = ''
@@ -45,7 +46,7 @@ let
       export R_HOME=${pkgs.R}/lib/R
       export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath extraLibs}:${pkgs.R}/lib/R/lib
        ${if cuda then ''
-      makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${julia_override}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --prefix R_HOME : "$R_HOME" \
@@ -55,7 +56,7 @@ let
        --set CUDA_PATH "${cudaVersion}"
       ''
          else ''
-      makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${julia_override}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
@@ -63,7 +64,7 @@ let
          ''
         }
     '';
- };
+  };
 
   kernelFile = {
     display_name = "Julia - ${name}";
@@ -76,20 +77,15 @@ let
       "${directory}/packages/IJulia/DrVMH/src/kernel.jl"
       "{connection_file}"
     ];
+
     logo64 = "logo-64x64.png";
 
-
-    env =  (if (NUM_THREADS > 1) then {
+    env =   {
       LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath extraLibs}";
       JULIA_DEPOT_PATH = "${directory}";
       JULIA_PKGDIR = "${directory}";
       JULIA_NUM_THREADS= "${toString NUM_THREADS}";
-    } else
-      {
-        LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath extraLibs}";
-        JULIA_DEPOT_PATH = "${directory}";
-        JULIA_PKGDIR = "${directory}";
-      });
+    };
   };
 
   Install_JuliaCUDA = writeScriptBin "Install_Julia_CUDA" ''
@@ -117,12 +113,13 @@ let
       echo '${builtins.toJSON kernelFile}' > $out/kernels/julia_${name}/kernel.json
     '';
   };
+
 in
-  {
-    spec = JuliaKernel;
-     runtimePackages = [
-       InstalliJulia
-       julia_wrapped
-       Install_JuliaCUDA
-    ];
-  }
+{
+  spec = JuliaKernel;
+  runtimePackages = [
+    julia_wrapped
+    InstalliJulia
+    Install_JuliaCUDA
+  ];
+}
