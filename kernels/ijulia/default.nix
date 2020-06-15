@@ -13,7 +13,6 @@
 }:
 
 let
-  julia_override = pkgs.julia_13.overrideAttrs(oldAttrs: {checkTarget = "";});
   extraLibs = with pkgs;[
     mbedtls
     zeromq3
@@ -38,7 +37,7 @@ let
 
   julia_wrapped = pkgs.stdenv.mkDerivation rec {
     name = "julia_wrapped";
-    buildInputs = [ julia_override ] ++ extraLibs;
+    buildInputs = [ pkgs.julia_13 ] ++ extraLibs;
     nativeBuildInputs = with pkgs; [ makeWrapper cacert git pkgconfig which ];
     phases = [ "installPhase" ];
     installPhase = ''
@@ -46,7 +45,7 @@ let
       export R_HOME=${pkgs.R}/lib/R
       export LD_LIBRARY_PATH=${pkgs.lib.makeLibraryPath extraLibs}:${pkgs.R}/lib/R/lib
        ${if cuda then ''
-      makeWrapper ${julia_override}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --prefix R_HOME : "$R_HOME" \
@@ -56,7 +55,7 @@ let
        --set CUDA_PATH "${cudaVersion}"
       ''
          else ''
-      makeWrapper ${julia_override}/bin/julia $out/bin/julia_wrapped \
+      makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
