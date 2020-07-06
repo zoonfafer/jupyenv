@@ -99,7 +99,7 @@ let
      if [ ! -d "${directory}/registries/Genera/" ]; then
      mkdir -p ${directory}/registries/General && git clone https://github.com/JuliaRegistries/General.git --depth=1 ${directory}/registries/General
      fi
-     ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.add("IJulia")'
+     ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.add("IJulia"); using IJulia'
 '';
 
   JuliaKernel = stdenv.mkDerivation {
