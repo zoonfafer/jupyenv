@@ -7,7 +7,7 @@
 }:
 
 let
-  kernelEnv = (python3.withPackages (p:
+  kernelEnv = (python37.withPackages (p:
     packages p ++ (with p; [
       ipykernel
     ])

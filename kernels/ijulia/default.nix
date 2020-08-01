@@ -15,7 +15,7 @@
 let
   extraLibs = with pkgs;[
     mbedtls
-    zeromq3
+    zeromq4
     # ImageMagick.jl
     imagemagickBig
     # GZip.jl # Required by DataFrames.jl
@@ -52,8 +52,8 @@ let
       --prefix R_HOME : "$R_HOME" \
       --prefix LD_LIBRARY_PATH ":" "${nvidiaVersion}/lib" \
       --set JULIA_PKGDIR ${directory} \
-      --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
-       --set CUDA_PATH "${cudaVersion}"
+      --set JULIA_NUM_THREADS ${toString NUM_THREADS}
+      --set CUDA_PATH "${cudaVersion}"
       ''
          else ''
       makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
