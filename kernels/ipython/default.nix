@@ -1,4 +1,4 @@
-{ python3
+{ python37
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
