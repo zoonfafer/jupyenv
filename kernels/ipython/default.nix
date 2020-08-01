@@ -1,4 +1,4 @@
-{ python37
+{ python3
 , stdenv
 , name ? "nixpkgs"
 , packages ? (_:[])
@@ -7,7 +7,7 @@
 }:
 
 let
-  kernelEnv = (python37.withPackages (p:
+  kernelEnv = (python3.withPackages (p:
     packages p ++ (with p; [
       ipykernel
     ])
