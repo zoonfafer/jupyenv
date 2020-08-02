@@ -52,7 +52,7 @@ let
       --prefix R_HOME : "$R_HOME" \
       --prefix LD_LIBRARY_PATH ":" "${nvidiaVersion}/lib" \
       --set JULIA_PKGDIR ${directory} \
-      --set JULIA_NUM_THREADS ${toString NUM_THREADS}
+      --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
       --set CUDA_PATH "${cudaVersion}"
       ''
          else ''
