@@ -15,7 +15,7 @@ let
 
   kernelFile = {
     display_name = "Nix - ${name}";
-    language = "Nix";
+    language = "nix";
     argv = [
       "${nix-bin}/bin/nix-kernel"
       "-f"
