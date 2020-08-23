@@ -12,7 +12,7 @@
 let
   kernelFile = {
     display_name = "Rust - ${name}";
-    language = "Rust";
+    language = "rust";
     argv = [
       "${evcxr}/bin/evcxr_jupyter"
       "--control_file"
