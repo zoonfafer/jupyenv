@@ -75,7 +75,7 @@ let
       "-i"
       "--startup-file=yes"
       "--color=yes"
-      "${directory}/packages/IJulia/DrVMH/src/kernel.jl"
+      "${directory}/packages/IJulia/tOM8L/src/kernel.jl"
       "{connection_file}"
     ];
 
