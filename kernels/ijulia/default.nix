@@ -75,7 +75,7 @@ let
       "-i"
       "--startup-file=yes"
       "--color=yes"
-      "${directory}/packages/IJulia/tOM8L/src/kernel.jl"
+      "${directory}/packages/IJulia/rWZ9e/src/kernel.jl"
       "{connection_file}"
     ];
 
@@ -99,6 +99,7 @@ let
 
   InstalliJulia = writeScriptBin "Install_iJulia" ''
      ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.update(); Pkg.add("IJulia")'
+     ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg;  Pkg.pin(PackageSpec(name="IJulia", version="1.21.4"))'
      ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.add("MbedTLS")'
      ## specific a MbedTLS version that fixes the MbedTls(Nix) can not load library
      ${julia_wrapped}/bin/julia_wrapped -e 'using Pkg; Pkg.pin(PackageSpec(name="MbedTLS", version="0.7.0")); using MbedTLS; using IJulia'
