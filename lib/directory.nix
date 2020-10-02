@@ -1,10 +1,19 @@
-{ pkgs }:
+{ pkgs, Rpackages ? (_:[])}:
 
 let
   jupyter = pkgs.python3Packages.jupyterlab;
 in
 
 {
+
+  r-bin-path  = pkgs.rWrapper.override{ packages = with pkgs.rPackages; [] ++ (Rpackages pkgs.rPackages);};
+
+  r-libs-site = pkgs.runCommand "r-libs-site" {
+    buildInputs = with pkgs; [  R
+                             ] ++ (Rpackages pkgs.rPackages);
+  } ''echo $R_LIBS_SITE > $out'' ;
+
+  
   generateDirectory = pkgs.writeScriptBin "generate-directory" ''
     if [ $# -eq 0 ]
       then

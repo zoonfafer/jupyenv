@@ -59,6 +59,7 @@ let
       makeWrapper ${pkgs.julia_13}/bin/julia $out/bin/julia_wrapped \
       --set JULIA_DEPOT_PATH ${directory} \
       --prefix LD_LIBRARY_PATH : "$LD_LIBRARY_PATH" \
+      --prefix R_HOME : "$R_HOME" \
       --set JULIA_NUM_THREADS ${toString NUM_THREADS} \
       --set JULIA_PKG_SERVER pkg.julialang.org \
       --set JULIA_PKGDIR ${directory}
