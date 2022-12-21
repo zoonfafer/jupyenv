@@ -9,15 +9,14 @@
   extraRuntimePackages ? [],
   julia-bin ? pkgs.julia-bin,
   JULIA_DEPOT_PATH ? "~/.julia",
-  activateDir ? "",
-  ijuliaRev ? "6TIq1",
+  activate ? "",
+  ijuliaRev ? "AQu2H",
 }: let
   inherit (pkgs) writeScriptBin writeText;
 
   startupFile = writeText "startup.jl" ''
     import Pkg
-    Pkg.activate("${activateDir}")
-    Pkg.update()
+    ${activate}
     Pkg.instantiate()
   '';
   activateJuliaPkg = writeScriptBin "activateJuliaPkg" ''
@@ -31,6 +30,7 @@
   allRuntimePackages = runtimePackages ++ extraRuntimePackages;
 
   env = julia-bin;
+
   wrappedEnv =
     pkgs.runCommand "wrapper-${env.name}"
     {nativeBuildInputs = [pkgs.makeWrapper];}
