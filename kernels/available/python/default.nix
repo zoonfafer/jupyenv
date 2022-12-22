@@ -18,6 +18,7 @@
   python ? pkgs.python3,
   editablePackageSources ? {},
   extraPackages ? ps: [],
+  groups ? [],
   preferWheels ? false,
   ignoreCollisions ? false,
 }: let
@@ -32,6 +33,7 @@
         editablePackageSources
         extraPackages
         preferWheels
+        groups
         ;
     })
     .override (args: {inherit ignoreCollisions;});
