@@ -415,7 +415,19 @@
             ''
           else
             pkgs.runCommand "wrapper-${jupyterlabEnv.name}"
-            {nativeBuildInputs = [pkgs.makeWrapper];}
+            {
+              nativeBuildInputs = [pkgs.makeWrapper];
+              passthru = {
+                kernels = builtins.listToAttrs (
+                  builtins.map
+                  (k: {
+                    name = k.name;
+                    value = k;
+                  })
+                  kernelDerivations
+                );
+              };
+            }
             (''
                 mkdir -p $out/bin
                 for i in ${jupyterlabEnv}/bin/*; do
