@@ -132,4 +132,11 @@ in {
       Ignore file collisions inside the environment.
     '';
   };
+  poetryEnv = lib.mkOption {
+    type = types.either types.package types.attrs;
+    default = {};
+    description = lib.mdDoc ''
+      The poetry environment for this ${kernelName} kernel.
+    '';
+  };
 }

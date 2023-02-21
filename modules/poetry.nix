@@ -45,7 +45,12 @@
             then poetry2nix.overrides.withDefaults (import config.overrides)
             else import config.overrides;
         }
-        // kernelModule.kernelArgs;
+        // kernelModule.kernelArgs // (lib.optionalAttrs (kernelName == "python") {
+          inherit
+            (config)
+            poetryEnv
+            ;
+        });
     };
   };
 in {

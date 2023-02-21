@@ -21,9 +21,10 @@
   preferWheels ? false,
   groups ? ["dev"],
   ignoreCollisions ? false,
+  poetryEnv ? {},
 }: let
   env =
-    (poetry2nix.mkPoetryEnv {
+    if poetryEnv != {} then poetryEnv else (poetry2nix.mkPoetryEnv {
       inherit
         projectDir
         pyproject
