@@ -105,7 +105,7 @@ in {
 
   groups = lib.mkOption {
     type = types.listOf types.str;
-    default = ["dev"];
+    default = [];
     defaultText = lib.literalExpression "[\"dev\"]";
     example = lib.literalExpression ''["dev" "doc"]'';
     description = lib.mdDoc ''
