@@ -3,6 +3,7 @@
   self,
   kernelName ? "",
   config,
+  pkgs,
 }: let
   inherit (lib) types;
 in {
@@ -132,9 +133,18 @@ in {
       Ignore file collisions inside the environment.
     '';
   };
+
+  overlays = import ./overlays.nix { inherit lib config self; };
+
   poetryEnv = lib.mkOption {
     type = types.either types.package types.attrs;
-    default = {};
+    default = let
+      pkgs' = pkgs.appendOverlays config.overlays;
+    in pkgs'.poetry2nix.mkPoetryEnv {
+      inherit (config) projectDir pyproject poetrylock
+        editablePackageSources extraPackages
+        preferWheels groups;
+    };
     description = lib.mdDoc ''
       The poetry environment for this ${kernelName} kernel.
     '';

@@ -6,6 +6,7 @@
   system,
   config,
   lib,
+  pkgs,
   ...
 }: let
   inherit (lib) types;
@@ -15,42 +16,19 @@
     name,
     ...
   }: let
-    args = {inherit self system lib config name kernelName requiredRuntimePackages;};
+    args = {inherit self system lib config name kernelName requiredRuntimePackages pkgs;};
     kernelModule = import ./kernel.nix args;
   in {
     options =
-      import ./types/poetry.nix {inherit lib self config kernelName;}
+      import ./types/poetry.nix {inherit lib self config kernelName pkgs;}
       // kernelModule.options;
 
     config = lib.mkIf config.enable {
       kernelArgs =
-        rec {
-          inherit
-            (config)
-            projectDir
-            pyproject
-            poetrylock
-            editablePackageSources
-            extraPackages
-            preferWheels
-            groups
-            ignoreCollisions
-            ;
-          pkgs = config.nixpkgs;
-          python = pkgs.${config.python};
-          poetry = pkgs.callPackage "${config.poetry2nix}/pkgs/poetry" {inherit python;};
-          poetry2nix = import "${config.poetry2nix}/default.nix" {inherit pkgs poetry;};
-          overrides =
-            if config.withDefaultOverrides == true
-            then poetry2nix.overrides.withDefaults (import config.overrides)
-            else import config.overrides;
+        {
+          inherit (config) poetryEnv;
         }
-        // kernelModule.kernelArgs // (lib.optionalAttrs (kernelName == "python") {
-          inherit
-            (config)
-            poetryEnv
-            ;
-        });
+        // kernelModule.kernelArgs;
     };
   };
 in {

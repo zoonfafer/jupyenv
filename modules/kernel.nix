@@ -5,6 +5,7 @@
   system,
   lib,
   config,
+  pkgs,
   requiredRuntimePackages ? [],
 }: let
   inherit (lib) types;
@@ -54,8 +55,6 @@ in {
       '';
     };
 
-    nixpkgs = import ./types/nixpkgs.nix {inherit lib self system;};
-
     kernelArgs = lib.mkOption {
       type = types.lazyAttrsOf types.raw;
       readOnly = true;
@@ -64,7 +63,6 @@ in {
   };
 
   kernelArgs = {
-    inherit self system;
     inherit
       (config)
       name
@@ -72,6 +70,6 @@ in {
       requiredRuntimePackages
       runtimePackages
       ;
-    pkgs = config.nixpkgs;
+    inherit pkgs;
   };
 }

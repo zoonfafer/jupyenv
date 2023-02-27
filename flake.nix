@@ -186,9 +186,7 @@
         poetry2nixPkgs = import "${poetry2nix}/default.nix" {inherit pkgs poetry;};
         poetry = pkgs.callPackage "${poetry2nix}/pkgs/poetry" {inherit python;};
 
-        baseArgs = {
-          inherit self system;
-        };
+        baseArgs = {};
 
         pre-commit = pre-commit-hooks.lib.${system}.run {
           src = self;
@@ -567,13 +565,18 @@
         exampleJupyterlabAllKernelsNew =
           mkJupyterlabNew (builtins.attrValues kernelsConfig.kernels);
 
-        eval = mkJupyterlabEval ({...}: {_module.check = false;});
+        eval = mkJupyterlabEval ({...}: {_module.check = false;
+                                         kernel.python.d.enable = true;
+                                         kernel.bash.d.enable = true;
+                                        }
+        );
         options = pkgs.nixosOptionsDoc {
           options = builtins.removeAttrs eval.options ["_module"];
         };
       in rec {
         lib = {
           inherit
+            eval
             mkJupyterlab
             mkJupyterlabFromPath
             mkJupyterlabNew

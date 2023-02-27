@@ -1,35 +1,10 @@
 {
-  self,
-  system,
-  poetry2nix ? self.inputs.poetry2nix,
-  pkgs ?
-    import self.inputs.nixpkgs {
-      inherit system;
-      overlays = [poetry2nix.overlay];
-    },
-  # https://github.com/nix-community/poetry2nix#mkPoetryEnv
-  projectDir ? self, # TODO: only include relevant files/folders
-  pyproject ? projectDir + "/pyproject.toml",
-  poetrylock ? projectDir + "/poetry.lock",
-  overrides ? import ./overrides.nix pkgs,
-  python ? pkgs.python3,
-  editablePackageSources ? {},
-  extraPackages ? (ps: []),
-  preferWheels ? false,
-  # groups ? ["devs"], # TODO: add groups after updating to latest poetry2nix. make sure to inherit below
+  pkgs,
+  poetryEnv,
+  ...
 }: let
-  jupyterlabEnvBase = pkgs.poetry2nix.mkPoetryEnv {
-    inherit
-      projectDir
-      pyproject
-      poetrylock
-      overrides
-      python
-      editablePackageSources
-      extraPackages
-      preferWheels
-      ;
-  };
+  jupyterlabEnvBase = poetryEnv;
+
   jupyterlab-checker =
     pkgs.writeText "jupyterlab-checker"
     ''

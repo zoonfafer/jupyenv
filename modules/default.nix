@@ -73,6 +73,7 @@ in {
             }
             // (lib.recursiveUpdate (import ./types/poetry.nix {
                 inherit lib self;
+                pkgs = config.nixpkgs;
                 config = config.jupyterlab.jupyterlabEnvArgs;
               })
               {
@@ -96,21 +97,21 @@ in {
 
   imports = [
     ./../kernels/available/bash/module.nix
-    ./../kernels/available/c/module.nix
-    ./../kernels/available/elm/module.nix
-    ./../kernels/available/go/module.nix
+    # ./../kernels/available/c/module.nix
+    # ./../kernels/available/elm/module.nix
+    # ./../kernels/available/go/module.nix
     ./../kernels/available/haskell/module.nix
-    ./../kernels/available/javascript/module.nix
-    ./../kernels/available/julia/module.nix
-    ./../kernels/available/nix/module.nix
-    ./../kernels/available/ocaml/module.nix
-    ./../kernels/available/postgres/module.nix
+    # ./../kernels/available/javascript/module.nix
+    # ./../kernels/available/julia/module.nix
+    # ./../kernels/available/nix/module.nix
+    # ./../kernels/available/ocaml/module.nix
+    # ./../kernels/available/postgres/module.nix
     ./../kernels/available/python/module.nix
-    ./../kernels/available/r/module.nix
-    ./../kernels/available/rust/module.nix
-    ./../kernels/available/scala/module.nix
-    ./../kernels/available/typescript/module.nix
-    ./../kernels/available/zsh/module.nix
+    # ./../kernels/available/r/module.nix
+    # ./../kernels/available/rust/module.nix
+    # ./../kernels/available/scala/module.nix
+    # ./../kernels/available/typescript/module.nix
+    # ./../kernels/available/zsh/module.nix
   ];
   # TODO: add kernels
   #++ map (name: ./. + "/../kernels/available/${name}/module.nix") (builtins.attrNames (builtins.readDir ./../kernels/available));
@@ -137,16 +138,11 @@ in {
     in
       mkJupyterlab {
         jupyterlabEnvArgs = {
+          pkgs = config.nixpkgs;
           inherit
             (config.jupyterlab.jupyterlabEnvArgs)
-            pyproject
-            projectDir
-            editablePackageSources
-            preferWheels
-            poetrylock
-            poetry2nix
+            poetryEnv
             ;
-
           # all of python packages should be kept in extraPackages, instead of runtimePackages
           extraPackages = ps:
             (lib.optionals (enabledLanguage "python" "lsp") [
