@@ -20,6 +20,13 @@ in {
         default = [];
       };
 
+      notebookConfig = lib.mkOption {
+        type = types.attrs;
+        description = "jupyter notebook config which will be written to jupyter_notebook_config.py";
+        default = {};
+        apply = c: lib.recursiveUpdate (lib.importJSON ./conf/jupyter_notebook_config.json) c;
+      };
+
       jupyterlabEnvArgs = lib.mkOption {
         type = types.submodule {
           options =
@@ -89,8 +96,15 @@ in {
         inherit
           (config.jupyterlab.jupyterlabEnvArgs)
           poetryEnv
+          extraPackages
           ;
       };
+
+      inherit
+        (config.jupyterlab)
+        notebookConfig
+        runtimePackages
+        ;
 
       kernels = availableKernels:
         lib.flatten
@@ -108,7 +122,6 @@ in {
           )
           (builtins.attrNames config.kernel)
         );
-      runtimePackages = config.jupyterlab.runtimePackages;
       #flakes = config.flakes;
     };
     _module.args.pkgs = config.nixpkgs;

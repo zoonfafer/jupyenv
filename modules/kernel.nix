@@ -54,6 +54,13 @@ in {
       '';
     };
 
+    notebookConfig = lib.mkOption {
+      type = types.attrs;
+      description = "jupyter notebook config which will be written to jupyter_notebook_config.py";
+      default = {};
+      apply = c: lib.recursiveUpdate (lib.importJSON ./conf/jupyter_notebook_config.json) c;
+    };
+
     nixpkgs = import ./types/nixpkgs.nix {
       inherit lib self system;
       overlays = import ./types/overlays.nix {inherit lib self config kernelName;};
