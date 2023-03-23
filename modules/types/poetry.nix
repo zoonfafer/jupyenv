@@ -40,7 +40,7 @@ in {
   };
 
   overrides = lib.mkOption {
-    type = types.either types.path (types.listOf types.anything);
+    type = with lib.types; either (listOf unspecified) path;
     default = self + "/kernels/available/${kernelName}/overrides.nix";
     defaultText = lib.literalExpression "self + \"/kernels/available/${kernelName}/overrides.nix\"";
     example = lib.literalExpression "self + \"/kernels/${kernelName}/overrides.nix\"";
