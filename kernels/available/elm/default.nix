@@ -34,5 +34,5 @@ in {
     "{connection_file}"
   ];
   codemirrorMode = "elm";
-  logo64 = ./logo64.png;
+  logo64 = ./logo-64x64.png;
 }

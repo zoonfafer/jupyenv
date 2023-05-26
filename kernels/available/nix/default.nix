@@ -35,5 +35,5 @@ in {
     "-f"
     "{connection_file}"
   ];
-  logo64 = ./logo64.png;
+  logo64 = ./logo-64x64.png;
 }

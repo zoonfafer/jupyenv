@@ -41,6 +41,6 @@ in {
     "{connection_file}"
   ];
   codemirrorMode = "rust";
-  logo64 = ./logo64.png;
-  logo32 = ./logo32.png;
+  logo64 = ./logo-64x64.png;
+  logo32 = ./logo-32x32.png;
 }

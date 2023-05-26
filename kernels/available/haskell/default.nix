@@ -41,5 +41,5 @@ in {
   # See https://github.com/IHaskell/IHaskell/pull/1191
   argv = kernelspec.argv ++ ["--codemirror" "Haskell"];
   codemirrorMode = "Haskell";
-  logo64 = ./logo64.png;
+  logo64 = ./logo-64x64.png;
 }

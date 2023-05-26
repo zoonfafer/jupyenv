@@ -38,5 +38,5 @@ in {
     "{connection_file}"
   ];
   codemirrorMode = "R";
-  logo64 = ./logo64.png;
+  logo64 = ./logo-64x64.png;
 }

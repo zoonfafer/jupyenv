@@ -236,7 +236,7 @@
     let
       kernelInstance = {
         name = "pythontest";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/available/python/logo-64x64.png;
       };
     in
       kernelLib.copyKernelLogos ["logo64"] kernelInstance
@@ -247,7 +247,7 @@
     let
       kernelInstance = {
         name = "pythontest";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/available/python/logo-64x64.png;
       };
     in
       kernelLib.copyKernelLogos ["logo32"] kernelInstance
@@ -282,7 +282,7 @@
         name = "pythontest";
         displayName = "Python Test";
         codemirrorMode = "python";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/available/python/logo-64x64.png;
       };
     in
       kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
@@ -330,7 +330,7 @@
         name = "pythontest";
         displayName = "Python Test";
         codemirrorMode = "python";
-        logo64 = ./kernels/available/python/logo64.png;
+        logo64 = ./kernels/available/python/logo-64x64.png;
       };
     in
       kernelLib.fixKernelJSON ["logo64" "logo32"] kernelInstance
@@ -427,7 +427,7 @@
         codemirrorMode = "shell";
         displayName = "Bash";
         language = "bash";
-        logo64 = /nix/store/<hash>/kernels/available/bash/logo64.png;
+        logo64 = /nix/store/<hash>/kernels/available/bash/logo-64x64.png;
         name = "bash";
         path = "/nix/store/<hash>/kernels/available/bash/default.nix";
       }
