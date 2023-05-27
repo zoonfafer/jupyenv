@@ -33,9 +33,14 @@ pkgs: let
     // addNativeBuildInputs prev "rfc3986-validator" [final.setuptools final.pytest-runner]
     // addNativeBuildInputs prev "jupyter-server-terminals" [final.hatchling]
     // addNativeBuildInputs prev "jupyter-events" [final.hatchling]
+    // addNativeBuildInputs prev "jupyterlab" [final.hatchling final.hatch-jupyter-builder]
     // addNativeBuildInputs prev "jupyter-server-fileid" [final.hatchling]
     // addNativeBuildInputs prev "jupyter-server" [final.hatchling final.hatch-jupyter-builder]
     // addNativeBuildInputs prev "jupyter-server-ydoc" [final.hatchling]
     // addNativeBuildInputs prev "ypy-websocket" [final.hatchling]
-    // addNativeBuildInputs prev "pathspec" [final.flit-core];
+    // addNativeBuildInputs prev "beautifulsoup4" [final.hatchling]
+    // addNativeBuildInputs prev "urllib3" [final.hatchling final.hatch-fancy-pypi-readme]
+    // addNativeBuildInputs prev "attrs" [final.hatchling final.hatch-fancy-pypi-readme final.hatch-vcs]
+    // addNativeBuildInputs prev "pathspec" [final.flit-core]
+  // addNativeBuildInputs prev "overrides" [final.setuptools];
 in [preOverlay pkgs.poetry2nix.defaultPoetryOverrides postOverlay]

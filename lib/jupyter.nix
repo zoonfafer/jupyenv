@@ -143,13 +143,13 @@
     jupyterDir = let
       mergeNotebookConfig = lib.recursiveUpdate notebookConfig {
         NotebookApp.use_redirect_file = false;
-        KernelSpecManager.whitelist = map (x: x.name) userKernels;
+        KernelSpecManager.whitelist = map (x: "${x.name}") userKernels;
       };
     in
       pkgs.runCommand "jupyter-dir" {} ''
         # make jupyter config and data directories
         mkdir -p $out/config $out/data
-        echo '${builtins.toJSON mergeNotebookConfig}' > $out/config/jupyter_notebook_config.json
+        echo '${builtins.toJSON mergeNotebookConfig}' > $out/config/jupyter_lab_config.json
         # make jupyter lab user settings and workspaces directories
         mkdir -p $out/config/lab/{user-settings,workspaces}
       '';
