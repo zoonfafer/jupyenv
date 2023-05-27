@@ -50,7 +50,7 @@ in {
               })
               {
                 projectDir.default = self.outPath;
-                poetryEnv.default = null;
+                env.default = null;
               });
         };
         default = {};
@@ -95,7 +95,7 @@ in {
         pkgs = config.nixpkgs;
         inherit
           (config.jupyterlab.jupyterlabEnvArgs)
-          poetryEnv
+          env
           extraPackages
           ;
       };

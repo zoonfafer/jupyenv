@@ -27,8 +27,7 @@
         rec {
           inherit
             (config)
-            ignoreCollisions
-            poetryEnv
+            env
             ;
         }
         // kernelModule.kernelArgs;

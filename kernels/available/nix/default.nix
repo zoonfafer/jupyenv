@@ -4,12 +4,9 @@
   displayName,
   requiredRuntimePackages,
   runtimePackages,
-  ignoreCollisions,
-  poetryEnv,
+  env,
   nixpkgsPath ? pkgs.path,
 }: let
-  env = poetryEnv.override (args: {inherit ignoreCollisions;});
-
   allRuntimePackages = requiredRuntimePackages ++ runtimePackages;
 
   wrappedEnv =

@@ -7,7 +7,7 @@
 }: rec {
   jupyterlabEnvWrapped = {
     pkgs,
-    poetryEnv,
+    env,
     projectDir ? self, # TODO: only include relevant files/folders
     pyproject ? projectDir + "/pyproject.toml",
     poetrylock ? projectDir + "/poetry.lock",
@@ -18,7 +18,7 @@
     preferWheels ? false,
   }: let
     jupyterlabEnvBase =
-      if poetryEnv == null
+      if env == null
       then
         pkgs.poetry2nix.mkPoetryEnv {
           inherit
@@ -32,7 +32,7 @@
             overrides
             ;
         }
-      else poetryEnv;
+      else env;
     jupyterlab-checker =
       pkgs.writeText "jupyterlab-checker"
       ''

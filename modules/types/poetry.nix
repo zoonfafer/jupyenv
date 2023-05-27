@@ -133,9 +133,9 @@ in {
     '';
   };
 
-  poetryEnv = lib.mkOption {
+  env = lib.mkOption {
     type = types.nullOr types.package;
-    default = config.nixpkgs.poetry2nix.mkPoetryEnv {
+    default = (config.nixpkgs.poetry2nix.mkPoetryEnv {
       inherit
         (config)
         projectDir
@@ -152,9 +152,10 @@ in {
         if config.withDefaultOverrides == true
         then config.nixpkgs.poetry2nix.overrides.withDefaults (import config.overrides)
         else config.overrides;
-    };
-    defaultText = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv";
-    example = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv";
+    }).override (args: {inherit (config) ignoreCollisions;});
+
+    defaultText = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv or pkgs.python3.buildEnv";
+    example = lib.literalExpression "pkgs.poetry2nix.mkPoetryEnv or pkgs.python3.buildEnv";
     description = lib.mdDoc ''
       The poetry environment for this ${kernelName} kernel.
     '';
