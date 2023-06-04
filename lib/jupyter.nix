@@ -16,6 +16,7 @@
     editablePackageSources ? {},
     extraPackages ? (ps: []),
     preferWheels ? false,
+    groups ? [],
   }: let
     jupyterlabEnvBase =
       if env == null
@@ -30,6 +31,7 @@
             editablePackageSources
             extraPackages
             overrides
+            groups
             ;
         }
       else env;
